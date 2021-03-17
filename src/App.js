@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import React, {Component} from 'react';
+class EventPractice extends Component {
+  state = {
+    message : '',
+    username : ''
+  }
+  handleChange=(e)=>{
+    this.setState({
+      [e.target.name] : e.target.value
+    })
+  }
+  handleClick=()=>{
+    alert(this.state.username+" : "+this.state.message);
+    this.setState({
+      message:'',
+      username:''
+    })
+  }
+  handleKeyPress=(e)=>{
+    if(e.key === "Enter"){
+      this.handleClick();
+    }
+  }
+  render(){
+    return(
+      <div>
+        <h1>event test</h1>
+        <input
+          type="text"
+          placeholder="input username"
+          name="username"
+          value={this.state.username}
+          onChange={this.handleChange}
+        />
+        <input
+          type="text"
+          placeholder="input message"
+          name="message"
+          value={this.state.message}
+          onChange={this.handleChange}
+          onKeyPress={this.handleKeyPress}
+        />
+        <button
+          onClick={this.handleClick}
+        >확인</button>
+      </div>
+    )
+  }
 }
-
-export default App;
+export default EventPractice;
