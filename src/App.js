@@ -1,50 +1,70 @@
 import React, {Component} from 'react';
-class EventPractice extends Component {
-  state = {
-    message : '',
-    username : ''
-  }
-  handleChange=(e)=>{
-    this.setState({
-      [e.target.name] : e.target.value
-    })
-  }
-  handleClick=()=>{
-    alert(this.state.username+" : "+this.state.message);
-    this.setState({
-      message:'',
-      username:''
-    })
-  }
-  handleKeyPress=(e)=>{
-    if(e.key === "Enter"){
-      this.handleClick();
+import PageTemplate from './components/PageTemplate'
+import TodoInput from './components/TodoInput'
+import TodoList from './components/TodoList'
+
+class App extends Component{
+    state = {
+        input:'',
+        todos:[],
     }
-  }
-  render(){
-    return(
-      <div>
-        <h1>event test</h1>
-        <input
-          type="text"
-          placeholder="input username"
-          name="username"
-          value={this.state.username}
-          onChange={this.handleChange}
-        />
-        <input
-          type="text"
-          placeholder="input message"
-          name="message"
-          value={this.state.message}
-          onChange={this.handleChange}
-          onKeyPress={this.handleKeyPress}
-        />
-        <button
-          onClick={this.handleClick}
-        >확인</button>
-      </div>
-    )
-  }
+    id=1;
+    getId=()=>{
+        return ++this.id;
+    }
+    handleChange=(e)=>{
+        const {value}= e.target;
+        this.setState({
+            input: value,
+        })
+    }
+    handleInsert=()=>{
+        const {input,todos}=this.state;
+        const newTodo={
+            text:input,
+            done:false,
+            id:this.getId(),
+        }
+        this.setState({
+            todos:[...todos, newTodo],
+            input: '',
+        })
+    }
+
+    handleToggle=(id)=>{
+        const {todos} = this.state;
+        const index = todos.findIndex(todo=>todo.id===id);
+        const toggled={
+            ...todos[index],done:!todos[index].done
+        }
+        this.setState({
+            todos:[...todos.slice(0,index),toggled,...todos.slice(index+1, todos.length)]
+        })
+    }
+
+    handleRemove=(id)=>{
+        const {todos} = this.state;
+        const index = todos.findIndex(todo=>todo.id === id)
+        this.setState({
+            todos:[...todos.slice(0,index),...todos.slice(index+1,todos.length)]
+        })
+    }
+
+    render(){
+        const {todos, input} = this.state;
+        const{
+            handleChange,
+            handleInsert,
+            handleToggle,
+            handleRemove,
+        } = this;
+        return(
+            <PageTemplate>
+                <TodoInput onChange={handleChange} onInsert={handleInsert} value={input}/>
+                <TodoList todos={todos} onToggle={handleToggle} onRemove={handleRemove}/>
+            </PageTemplate>
+        )
+    }
 }
-export default EventPractice;
+
+export default App;
